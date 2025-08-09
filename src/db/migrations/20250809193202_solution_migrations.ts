@@ -6,6 +6,7 @@ export async function up(knex: Knex) {
 		table.increments('id').primary();
 		table.string('nome').notNullable();
 		table.date('dataDeIncorporacao').notNullable();
+		table.check('"dataDeIncorporacao" <= CURRENT_DATE');
 		table.string('cargo').notNullable();
 	});
 
