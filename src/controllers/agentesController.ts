@@ -20,8 +20,8 @@ function getAllAgents(req: Request, res: Response) {
 }
 
 function getAgentById(req: Request, res: Response) {
-	const agentId = req.params.id;
-	if (!z.uuid().safeParse(agentId).success) {
+	const agentId = parseInt(req.params.id);
+	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
@@ -36,40 +36,32 @@ function createAgent(req: Request, res: Response) {
 }
 
 function overwriteAgent(req: Request, res: Response) {
-	const agentId = req.params.id;
-	if (!z.uuid().safeParse(agentId).success) {
+	const agentId = parseInt(req.params.id);
+	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
-	const existingAgent = agentRepository.findById(agentId);
 	const updatedData = AgentSchema.omit({ id: true }).parse(req.body);
-	const updatedAgent = agentRepository.updateAgent(
-		existingAgent,
-		updatedData,
-	);
+	const updatedAgent = agentRepository.updateAgent(agentId, updatedData);
 	res.json(updatedAgent);
 }
 
 function updateAgent(req: Request, res: Response) {
-	const agentId = req.params.id;
-	if (!z.uuid().safeParse(agentId).success) {
+	const agentId = parseInt(req.params.id);
+	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
-	const existingAgent = agentRepository.findById(agentId);
 	const updatedData = AgentSchema.omit({ id: true })
 		.partial()
 		.parse(req.body);
-	const updatedAgent = agentRepository.updateAgent(
-		existingAgent,
-		updatedData,
-	);
+	const updatedAgent = agentRepository.updateAgent(agentId, updatedData);
 	res.json(updatedAgent);
 }
 
 function deleteAgent(req: Request, res: Response) {
-	const agentId = req.params.id;
-	if (!z.uuid().safeParse(agentId).success) {
+	const agentId = parseInt(req.params.id);
+	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 

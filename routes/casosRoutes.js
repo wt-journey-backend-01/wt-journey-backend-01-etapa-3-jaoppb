@@ -76,7 +76,7 @@ const getByIdApi = {
       name: "id",
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" }
+      schema: { type: "integer" }
     }
   ],
   responses: {
@@ -101,7 +101,7 @@ const getAgentByCaseIdApi = {
       name: "id",
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" }
+      schema: { type: "integer" }
     }
   ],
   responses: {
@@ -147,7 +147,7 @@ const putApi = {
       name: "id",
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" }
+      schema: { type: "integer" }
     }
   ],
   requestBody: {
@@ -176,7 +176,7 @@ const patchApi = {
       name: "id",
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" }
+      schema: { type: "integer" }
     }
   ],
   requestBody: {
@@ -205,7 +205,7 @@ const deleteApi = {
       name: "id",
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" }
+      schema: { type: "integer" }
     }
   ],
   responses: {

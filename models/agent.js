@@ -32,9 +32,9 @@ __export(agent_exports, {
 });
 module.exports = __toCommonJS(agent_exports);
 var import_zod = __toESM(require("zod"));
-const agentId = import_zod.default.uuidv4().meta({
+const agentId = import_zod.default.int().meta({
   description: "Unique identifier for the agent",
-  example: "123e4567-e89b-12d3-a456-426614174000"
+  example: 1
 });
 const nome = import_zod.default.string().min(2).max(100).meta({
   description: "Name of the agent",
@@ -57,7 +57,7 @@ const AgentSchema = import_zod.default.object({
   id: "Agent",
   description: "Schema for an agent in the system",
   example: {
-    id: "123e4567-e89b-12d3-a456-426614174000",
+    id: 1,
     nome: "John Doe",
     dataDeIncorporacao: "2023-01-01",
     cargo: "Sales Manager"

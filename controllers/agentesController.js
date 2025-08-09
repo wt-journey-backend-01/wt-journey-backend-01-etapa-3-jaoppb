@@ -46,8 +46,8 @@ function getAllAgents(req, res) {
   res.json(agents);
 }
 function getAgentById(req, res) {
-  const agentId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(agentId).success) {
+  const agentId = parseInt(req.params.id);
+  if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
   const foundAgent = import_agentesRepository.default.findById(agentId);
@@ -59,34 +59,26 @@ function createAgent(req, res) {
   res.status(201).json(createdAgent);
 }
 function overwriteAgent(req, res) {
-  const agentId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(agentId).success) {
+  const agentId = parseInt(req.params.id);
+  if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
-  const existingAgent = import_agentesRepository.default.findById(agentId);
   const updatedData = import_agent.default.omit({ id: true }).parse(req.body);
-  const updatedAgent = import_agentesRepository.default.updateAgent(
-    existingAgent,
-    updatedData
-  );
+  const updatedAgent = import_agentesRepository.default.updateAgent(agentId, updatedData);
   res.json(updatedAgent);
 }
 function updateAgent(req, res) {
-  const agentId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(agentId).success) {
+  const agentId = parseInt(req.params.id);
+  if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
-  const existingAgent = import_agentesRepository.default.findById(agentId);
   const updatedData = import_agent.default.omit({ id: true }).partial().parse(req.body);
-  const updatedAgent = import_agentesRepository.default.updateAgent(
-    existingAgent,
-    updatedData
-  );
+  const updatedAgent = import_agentesRepository.default.updateAgent(agentId, updatedData);
   res.json(updatedAgent);
 }
 function deleteAgent(req, res) {
-  const agentId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(agentId).success) {
+  const agentId = parseInt(req.params.id);
+  if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
   import_agentesRepository.default.deleteAgent(agentId);

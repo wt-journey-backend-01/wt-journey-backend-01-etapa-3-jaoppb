@@ -1,90 +1,77 @@
-import { DuplicateIDError } from '../errors/duplicateID';
+import { knex } from 'knex';
 import { FutureDateError } from '../errors/futureDate';
 import { NotFoundError } from '../errors/notFound';
 import { Agent } from '../models/agent';
-import { v4 as uuid } from 'uuid';
-
-const agents: Agent[] = [
-	{
-		id: uuid(),
-		nome: 'Rommel Carneiro',
-		dataDeIncorporacao: '1992-10-04',
-		cargo: 'Investigador',
-	},
-	{
-		id: uuid(),
-		nome: 'Ana Paula Silva',
-		dataDeIncorporacao: '1995-05-15',
-		cargo: 'Delegado',
-	},
-];
 
 export type AgentFilters = {
 	cargo?: string;
 	sort?: 'dataDeIncorporacao' | '-dataDeIncorporacao';
 };
 
-function findAll(filters?: AgentFilters): Agent[] {
-	let agentsList = agents;
+async function findAll(filters?: AgentFilters): Promise<Agent[]> {
+	const query = knex<Agent>('agentes');
+	let builder;
+
 	if (filters?.cargo) {
-		agentsList = agentsList.filter((a) => a.cargo === filters.cargo);
+		builder = (builder ?? query).where('cargo', filters.cargo);
 	}
+
 	if (filters?.sort) {
-		agentsList.sort((a, b) => {
-			if (filters.sort === '-dataDeIncorporacao') {
-				return (
-					new Date(a.dataDeIncorporacao).getTime() -
-					new Date(b.dataDeIncorporacao).getTime()
-				);
-			} else if (filters.sort === 'dataDeIncorporacao') {
-				return (
-					new Date(b.dataDeIncorporacao).getTime() -
-					new Date(a.dataDeIncorporacao).getTime()
-				);
-			}
-			return 0;
-		});
+		const column = 'dataDeIncorporacao';
+		const direction = filters.sort.startsWith('-') ? 'desc' : 'asc';
+		builder = (builder ?? query).orderBy(column, direction);
 	}
-	return agentsList;
+
+	return (builder ?? query).select('*');
 }
 
-function findById(id: string): Agent {
-	const foundAgent = agents.find((a) => a.id === id);
-	if (foundAgent === undefined) throw new NotFoundError('Agent', id);
-	return foundAgent;
+async function findById(id: number): Promise<Agent> {
+	return knex<Agent>('agentes')
+		.where({ id })
+		.first()
+		.then((foundAgent) => {
+			if (foundAgent === undefined) throw new NotFoundError('Agent', id);
+			return foundAgent;
+		});
 }
 
-function createAgent(newAgent: Omit<Agent, 'id'>): Agent {
+async function createAgent(newAgent: Omit<Agent, 'id'>): Promise<Agent> {
 	const date = new Date(newAgent.dataDeIncorporacao);
 	if (date.getTime() > Date.now()) {
 		throw new FutureDateError(date);
 	}
 
-	const agentWithId: Agent = {
-		...newAgent,
-		id: uuid(),
-	};
-
-	try {
-		findById(agentWithId.id);
-		throw new DuplicateIDError(agentWithId.id);
-	} catch (error) {
-		if (!(error instanceof NotFoundError)) throw error;
-	}
-
-	agents.push(agentWithId);
-	return agentWithId;
+	return knex<Agent>('agentes')
+		.insert(newAgent)
+		.returning('*')
+		.then((createdAgents) => {
+			if (createdAgents.length === 0)
+				throw new Error('Agent not created');
+			return createdAgents[0];
+		});
 }
 
-function updateAgent(agent: Agent, updatedAgent: Partial<Agent>): Agent {
-	Object.assign(agent, updatedAgent);
-	return agent;
+async function updateAgent(
+	id: number,
+	updatedAgent: Partial<Agent>,
+): Promise<Agent> {
+	await knex<Agent>('agentes')
+		.where({ id })
+		.update(updatedAgent)
+		.then((updatedCount) => {
+			if (updatedCount === 0) throw new NotFoundError('Agent', id);
+		});
+
+	return findById(id);
 }
 
-function deleteAgent(id: string): void {
-	const index = agents.findIndex((a) => a.id === id);
-	if (index === -1) throw new NotFoundError('Agent', id);
-	agents.splice(index, 1);
+async function deleteAgent(id: number): Promise<void> {
+	await knex<Agent>('agentes')
+		.where({ id })
+		.del()
+		.then((deletedCount) => {
+			if (deletedCount === 0) throw new NotFoundError('Agent', id);
+		});
 }
 
 export default {

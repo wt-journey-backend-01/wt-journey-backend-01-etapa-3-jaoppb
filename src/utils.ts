@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { DuplicateIDError } from './errors/duplicateID';
 import { NotFoundError } from './errors/notFound';
 import { RequiredParamError } from './errors/requiredParam';
 import { InvalidIDError } from './errors/invalidID';
@@ -30,10 +29,6 @@ export function errorHandler(
 			return res.status(400).json({
 				message: 'Parâmetros inválidos',
 				errors: err.issues.map(handleZodIssue),
-			});
-		case err instanceof DuplicateIDError:
-			return res.status(409).json({
-				message: err.message,
 			});
 		case err instanceof NotFoundError || err instanceof InvalidIDError:
 			return res.status(404).json({

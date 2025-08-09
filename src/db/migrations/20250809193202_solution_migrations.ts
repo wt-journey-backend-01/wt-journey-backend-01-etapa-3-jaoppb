@@ -1,9 +1,5 @@
 import { Knex } from 'knex';
-
-export enum CaseStatus {
-	OPEN = 'aberto',
-	CLOSED = 'solucionado',
-}
+import { CaseStatus } from '../../models/case';
 
 export async function up(knex: Knex) {
 	await knex.schema.createTable('agentes', (table) => {

@@ -28,13 +28,20 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var case_exports = {};
 __export(case_exports, {
+  CaseStatus: () => CaseStatus,
   default: () => case_default
 });
 module.exports = __toCommonJS(case_exports);
 var import_zod = __toESM(require("zod"));
-const caseId = import_zod.default.uuidv4().meta({
+var import_agent = __toESM(require("./agent"));
+var CaseStatus = /* @__PURE__ */ ((CaseStatus2) => {
+  CaseStatus2["OPEN"] = "aberto";
+  CaseStatus2["CLOSED"] = "solucionado";
+  return CaseStatus2;
+})(CaseStatus || {});
+const caseId = import_zod.default.int().meta({
   description: "Unique identifier for the case",
-  example: "123e4567-e89b-12d3-a456-426614174000"
+  example: 1
 });
 const titulo = import_zod.default.string().min(2).max(100).meta({
   description: "Title of the case",
@@ -44,7 +51,7 @@ const descricao = import_zod.default.string().min(10).max(1e3).meta({
   description: "Description of the case",
   example: "Detailed description of the case"
 });
-const status = import_zod.default.enum(["aberto", "solucionado"]).meta({
+const status = import_zod.default.enum(Object.values(CaseStatus)).meta({
   description: "Status of the case",
   example: "aberto"
 });
@@ -53,16 +60,20 @@ const CaseSchema = import_zod.default.object({
   titulo,
   descricao,
   status,
-  agente_id: import_zod.default.string()
+  agente_id: import_agent.default.shape.id
 }).meta({
   id: "Case",
   description: "Schema for a case in the system",
   example: {
-    id: "123e4567-e89b-12d3-a456-426614174000",
+    id: 1,
     titulo: "Case Title",
     descricao: "Detailed description of the case",
     status: "aberto",
-    agente_id: "123e4567-e89b-12d3-a456-426614174000"
+    agente_id: 1
   }
 }).strict();
 var case_default = CaseSchema;
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  CaseStatus
+});

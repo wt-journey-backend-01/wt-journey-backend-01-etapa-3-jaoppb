@@ -46,7 +46,7 @@ const getByIdApi: ZodOpenApiOperationObject = {
 			name: 'id',
 			in: 'path',
 			required: true,
-			schema: { type: 'string', format: 'uuid' },
+			schema: { type: 'integer' },
 		},
 	],
 	responses: {
@@ -72,7 +72,7 @@ const getAgentByCaseIdApi: ZodOpenApiOperationObject = {
 			name: 'id',
 			in: 'path',
 			required: true,
-			schema: { type: 'string', format: 'uuid' },
+			schema: { type: 'integer' },
 		},
 	],
 	responses: {
@@ -120,7 +120,7 @@ const putApi: ZodOpenApiOperationObject = {
 			name: 'id',
 			in: 'path',
 			required: true,
-			schema: { type: 'string', format: 'uuid' },
+			schema: { type: 'integer' },
 		},
 	],
 	requestBody: {
@@ -150,7 +150,7 @@ const patchApi: ZodOpenApiOperationObject = {
 			name: 'id',
 			in: 'path',
 			required: true,
-			schema: { type: 'string', format: 'uuid' },
+			schema: { type: 'integer' },
 		},
 	],
 	requestBody: {
@@ -180,7 +180,7 @@ const deleteApi: ZodOpenApiOperationObject = {
 			name: 'id',
 			in: 'path',
 			required: true,
-			schema: { type: 'string', format: 'uuid' },
+			schema: { type: 'integer' },
 		},
 	],
 	responses: {

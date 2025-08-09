@@ -22,7 +22,6 @@ __export(utils_exports, {
 });
 module.exports = __toCommonJS(utils_exports);
 var import_zod = require("zod");
-var import_duplicateID = require("./errors/duplicateID");
 var import_notFound = require("./errors/notFound");
 var import_requiredParam = require("./errors/requiredParam");
 var import_invalidID = require("./errors/invalidID");
@@ -43,10 +42,6 @@ function errorHandler(err, req, res, next) {
       return res.status(400).json({
         message: "Par\xE2metros inv\xE1lidos",
         errors: err.issues.map(handleZodIssue)
-      });
-    case err instanceof import_duplicateID.DuplicateIDError:
-      return res.status(409).json({
-        message: err.message
       });
     case (err instanceof import_notFound.NotFoundError || err instanceof import_invalidID.InvalidIDError):
       return res.status(404).json({

@@ -20,20 +20,20 @@ function getAllCases(req: Request, res: Response) {
 	res.json(cases);
 }
 
-function getAgentByCaseId(req: Request, res: Response) {
-	const caseId = req.params.id;
-	if (!z.uuid().safeParse(caseId).success) {
+async function getAgentByCaseId(req: Request, res: Response) {
+	const caseId = parseInt(req.params.id);
+	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
-	const foundCase = casesRepository.findById(caseId);
-	const agent = agentsRepository.findById(foundCase.agente_id);
+	const foundCase = await casesRepository.findById(caseId);
+	const agent = await agentsRepository.findById(foundCase.agente_id);
 	res.json(agent);
 }
 
 function getCaseById(req: Request, res: Response) {
-	const caseId = req.params.id;
-	if (!z.uuid().safeParse(caseId).success) {
+	const caseId = parseInt(req.params.id);
+	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
@@ -48,32 +48,30 @@ function createCase(req: Request, res: Response) {
 }
 
 function overwriteCase(req: Request, res: Response) {
-	const caseId = req.params.id;
-	if (!z.uuid().safeParse(caseId).success) {
+	const caseId = parseInt(req.params.id);
+	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
-	const existingCase = casesRepository.findById(caseId);
 	const updatedData = CaseSchema.omit({ id: true }).parse(req.body);
-	const updatedCase = casesRepository.updateCase(existingCase, updatedData);
+	const updatedCase = casesRepository.updateCase(caseId, updatedData);
 	res.json(updatedCase);
 }
 
 function updateCase(req: Request, res: Response) {
-	const caseId = req.params.id;
-	if (!z.uuid().safeParse(caseId).success) {
+	const caseId = parseInt(req.params.id);
+	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
-	const existingCase = casesRepository.findById(caseId);
 	const updatedData = CaseSchema.omit({ id: true }).partial().parse(req.body);
-	const updatedCase = casesRepository.updateCase(existingCase, updatedData);
+	const updatedCase = casesRepository.updateCase(caseId, updatedData);
 	res.json(updatedCase);
 }
 
 function deleteCase(req: Request, res: Response) {
-	const caseId = req.params.id;
-	if (!z.uuid().safeParse(caseId).success) {
+	const caseId = parseInt(req.params.id);
+	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 

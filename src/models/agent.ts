@@ -1,8 +1,8 @@
 import z from 'zod';
 
-const agentId = z.uuidv4().meta({
+const agentId = z.int().meta({
 	description: 'Unique identifier for the agent',
-	example: '123e4567-e89b-12d3-a456-426614174000',
+	example: 1,
 });
 
 const nome = z.string().min(2).max(100).meta({
@@ -34,7 +34,7 @@ const AgentSchema = z
 		id: 'Agent',
 		description: 'Schema for an agent in the system',
 		example: {
-			id: '123e4567-e89b-12d3-a456-426614174000',
+			id: 1,
 			nome: 'John Doe',
 			dataDeIncorporacao: '2023-01-01',
 			cargo: 'Sales Manager',

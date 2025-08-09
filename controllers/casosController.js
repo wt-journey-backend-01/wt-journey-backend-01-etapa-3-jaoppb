@@ -46,18 +46,18 @@ function getAllCases(req, res) {
   const cases = import_casosRepository.default.findAll(filters);
   res.json(cases);
 }
-function getAgentByCaseId(req, res) {
-  const caseId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(caseId).success) {
+async function getAgentByCaseId(req, res) {
+  const caseId = parseInt(req.params.id);
+  if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
-  const foundCase = import_casosRepository.default.findById(caseId);
-  const agent = import_agentesRepository.default.findById(foundCase.agente_id);
+  const foundCase = await import_casosRepository.default.findById(caseId);
+  const agent = await import_agentesRepository.default.findById(foundCase.agente_id);
   res.json(agent);
 }
 function getCaseById(req, res) {
-  const caseId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(caseId).success) {
+  const caseId = parseInt(req.params.id);
+  if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
   const foundCase = import_casosRepository.default.findById(caseId);
@@ -69,28 +69,26 @@ function createCase(req, res) {
   res.status(201).json(createdCase);
 }
 function overwriteCase(req, res) {
-  const caseId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(caseId).success) {
+  const caseId = parseInt(req.params.id);
+  if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
-  const existingCase = import_casosRepository.default.findById(caseId);
   const updatedData = import_case.default.omit({ id: true }).parse(req.body);
-  const updatedCase = import_casosRepository.default.updateCase(existingCase, updatedData);
+  const updatedCase = import_casosRepository.default.updateCase(caseId, updatedData);
   res.json(updatedCase);
 }
 function updateCase(req, res) {
-  const caseId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(caseId).success) {
+  const caseId = parseInt(req.params.id);
+  if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
-  const existingCase = import_casosRepository.default.findById(caseId);
   const updatedData = import_case.default.omit({ id: true }).partial().parse(req.body);
-  const updatedCase = import_casosRepository.default.updateCase(existingCase, updatedData);
+  const updatedCase = import_casosRepository.default.updateCase(caseId, updatedData);
   res.json(updatedCase);
 }
 function deleteCase(req, res) {
-  const caseId = req.params.id;
-  if (!import_zod.default.uuid().safeParse(caseId).success) {
+  const caseId = parseInt(req.params.id);
+  if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
   import_casosRepository.default.deleteCase(caseId);

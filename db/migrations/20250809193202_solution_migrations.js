@@ -18,16 +18,11 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var solution_migrations_exports = {};
 __export(solution_migrations_exports, {
-  CaseStatus: () => CaseStatus,
   down: () => down,
   up: () => up
 });
 module.exports = __toCommonJS(solution_migrations_exports);
-var CaseStatus = /* @__PURE__ */ ((CaseStatus2) => {
-  CaseStatus2["OPEN"] = "aberto";
-  CaseStatus2["CLOSED"] = "solucionado";
-  return CaseStatus2;
-})(CaseStatus || {});
+var import_case = require("../../models/case");
 async function up(knex) {
   await knex.schema.createTable("agentes", (table) => {
     table.increments("id").primary();
@@ -39,7 +34,7 @@ async function up(knex) {
     table.increments("id").primary();
     table.string("titulo").notNullable();
     table.text("descricao").notNullable();
-    table.enum("status", Object.values(CaseStatus)).notNullable();
+    table.enum("status", Object.values(import_case.CaseStatus)).notNullable();
     table.integer("agenteId").unsigned().notNullable();
     table.foreign("agenteId").references("id").inTable("agentes").onDelete("CASCADE");
   });
@@ -50,7 +45,6 @@ async function down(knex) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  CaseStatus,
   down,
   up
 });
