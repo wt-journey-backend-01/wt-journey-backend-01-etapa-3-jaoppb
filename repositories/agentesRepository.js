@@ -48,32 +48,35 @@ async function findAll(filters) {
   return (builder ?? query).select("*");
 }
 async function findById(id) {
-  return (0, import_db.default)("agentes").where({ id }).first().then((foundAgent) => {
-    if (foundAgent === void 0) throw new import_notFound.NotFoundError("Agent", id);
-    return foundAgent;
-  });
+  const result = await (0, import_db.default)("agentes").where({ id }).first();
+  if (!result) {
+    throw new import_notFound.NotFoundError("Agent", id);
+  }
+  return result;
 }
 async function createAgent(newAgent) {
   const date = new Date(newAgent.dataDeIncorporacao);
   if (date.getTime() > Date.now()) {
     throw new import_futureDate.FutureDateError(date);
   }
-  return (0, import_db.default)("agentes").insert(newAgent).returning("*").then((createdAgents) => {
-    if (createdAgents.length === 0)
-      throw new Error("Agent not created");
-    return createdAgents[0];
-  });
+  const result = await (0, import_db.default)("agentes").insert(newAgent).returning("*");
+  if (result.length === 0) {
+    throw new Error("Failed to create agent");
+  }
+  return result[0];
 }
 async function updateAgent(id, updatedAgent) {
-  await (0, import_db.default)("agentes").where({ id }).update(updatedAgent).then((updatedCount) => {
-    if (updatedCount === 0) throw new import_notFound.NotFoundError("Agent", id);
-  });
+  const result = await (0, import_db.default)("agentes").where({ id }).update(updatedAgent);
+  if (result === 0) {
+    throw new import_notFound.NotFoundError("Agent", id);
+  }
   return findById(id);
 }
 async function deleteAgent(id) {
-  await (0, import_db.default)("agentes").where({ id }).del().then((deletedCount) => {
-    if (deletedCount === 0) throw new import_notFound.NotFoundError("Agent", id);
-  });
+  const result = await (0, import_db.default)("agentes").where({ id }).del();
+  if (result === 0) {
+    throw new import_notFound.NotFoundError("Agent", id);
+  }
 }
 var agentesRepository_default = {
   findAll,

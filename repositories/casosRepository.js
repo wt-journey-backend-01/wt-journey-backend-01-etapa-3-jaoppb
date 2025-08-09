@@ -54,24 +54,28 @@ async function findAll(filters) {
   return await (builder ?? query).select();
 }
 async function findById(id) {
-  return (0, import_db.default)("casos").where({ id }).first().then((foundCase) => {
-    if (foundCase === void 0) throw new import_notFound.NotFoundError("Case", id);
-    return foundCase;
-  });
+  const result = await (0, import_db.default)("casos").where({ id }).first();
+  if (!result) {
+    throw new import_notFound.NotFoundError("Case", id);
+  }
+  return result;
 }
 async function createCase(newCase) {
-  return (0, import_db.default)("casos").insert(newCase).returning("*").then((rows) => rows[0]);
+  console.log(newCase);
+  return (await (0, import_db.default)("casos").insert(newCase).returning("*"))[0];
 }
 async function updateCase(id, updatedCase) {
-  await (0, import_db.default)("casos").where({ id }).update(updatedCase).then((count) => {
-    if (count === 0) throw new import_notFound.NotFoundError("Case", id);
-  });
+  const result = await (0, import_db.default)("casos").where({ id }).update(updatedCase);
+  if (result === 0) {
+    throw new import_notFound.NotFoundError("Case", id);
+  }
   return findById(id);
 }
 async function deleteCase(id) {
-  return (0, import_db.default)("casos").where({ id }).delete().then((count) => {
-    if (count === 0) throw new import_notFound.NotFoundError("Case", id);
-  });
+  const result = await (0, import_db.default)("casos").where({ id }).delete();
+  if (result === 0) {
+    throw new import_notFound.NotFoundError("Case", id);
+  }
 }
 var casosRepository_default = {
   findAll,

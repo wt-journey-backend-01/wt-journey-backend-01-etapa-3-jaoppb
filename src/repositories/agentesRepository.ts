@@ -26,13 +26,11 @@ async function findAll(filters?: AgentFilters): Promise<Agent[]> {
 }
 
 async function findById(id: number): Promise<Agent> {
-	return knex<Agent>('agentes')
-		.where({ id })
-		.first()
-		.then((foundAgent) => {
-			if (foundAgent === undefined) throw new NotFoundError('Agent', id);
-			return foundAgent;
-		});
+	const result = await knex<Agent>('agentes').where({ id }).first();
+	if (!result) {
+		throw new NotFoundError('Agent', id);
+	}
+	return result;
 }
 
 async function createAgent(newAgent: Omit<Agent, 'id'>): Promise<Agent> {
@@ -41,37 +39,32 @@ async function createAgent(newAgent: Omit<Agent, 'id'>): Promise<Agent> {
 		throw new FutureDateError(date);
 	}
 
-	return knex<Agent>('agentes')
-		.insert(newAgent)
-		.returning('*')
-		.then((createdAgents) => {
-			if (createdAgents.length === 0)
-				throw new Error('Agent not created');
-			return createdAgents[0];
-		});
+	const result = await knex<Agent>('agentes').insert(newAgent).returning('*');
+	if (result.length === 0) {
+		throw new Error('Failed to create agent');
+	}
+	return result[0];
 }
 
 async function updateAgent(
 	id: number,
 	updatedAgent: Partial<Agent>,
 ): Promise<Agent> {
-	await knex<Agent>('agentes')
+	const result = await knex<Agent>('agentes')
 		.where({ id })
-		.update(updatedAgent)
-		.then((updatedCount) => {
-			if (updatedCount === 0) throw new NotFoundError('Agent', id);
-		});
+		.update(updatedAgent);
 
+	if (result === 0) {
+		throw new NotFoundError('Agent', id);
+	}
 	return findById(id);
 }
 
 async function deleteAgent(id: number): Promise<void> {
-	await knex<Agent>('agentes')
-		.where({ id })
-		.del()
-		.then((deletedCount) => {
-			if (deletedCount === 0) throw new NotFoundError('Agent', id);
-		});
+	const result = await knex<Agent>('agentes').where({ id }).del();
+	if (result === 0) {
+		throw new NotFoundError('Agent', id);
+	}
 }
 
 export default {
