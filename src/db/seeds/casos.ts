@@ -8,21 +8,21 @@ async function seed(knex: Knex) {
 			titulo: 'Caso 1',
 			descricao: 'Descrição do caso 1',
 			status: 'aberto',
-			agenteId: 1,
+			agente_id: 1,
 		},
 		{
 			id: 2,
 			titulo: 'Caso 2',
 			descricao: 'Descrição do caso 2',
 			status: 'solucionado',
-			agenteId: 2,
+			agente_id: 2,
 		},
 		{
 			id: 3,
 			titulo: 'Caso 3',
 			descricao: 'Descrição do caso 3',
 			status: 'aberto',
-			agenteId: 3,
+			agente_id: 3,
 		},
 	]);
 }
