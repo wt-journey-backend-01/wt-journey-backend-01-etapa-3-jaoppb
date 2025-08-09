@@ -40,7 +40,13 @@ async function findById(id: number): Promise<Case> {
 }
 
 async function createCase(newCase: Omit<Case, 'id'>): Promise<Case> {
-	console.log(newCase);
+	const agenteExists = await knex('agentes')
+		.where({ id: newCase.agente_id })
+		.first();
+	if (!agenteExists) {
+		throw new NotFoundError('Agent', newCase.agente_id);
+	}
+
 	return (await knex<Case>('casos').insert(newCase).returning('*'))[0];
 }
 
@@ -48,6 +54,15 @@ async function updateCase(
 	id: number,
 	updatedCase: Partial<Case>,
 ): Promise<Case> {
+	if (updatedCase.agente_id) {
+		const agenteExists = await knex('agentes')
+			.where({ id: updatedCase.agente_id })
+			.first();
+		if (!agenteExists) {
+			throw new NotFoundError('Agent', updatedCase.agente_id);
+		}
+	}
+
 	const result = await knex<Case>('casos').where({ id }).update(updatedCase);
 	if (result === 0) {
 		throw new NotFoundError('Case', id);

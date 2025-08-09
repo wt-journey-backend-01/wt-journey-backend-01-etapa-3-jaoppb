@@ -61,10 +61,19 @@ async function findById(id) {
   return result;
 }
 async function createCase(newCase) {
-  console.log(newCase);
+  const agenteExists = await (0, import_db.default)("agentes").where({ id: newCase.agente_id }).first();
+  if (!agenteExists) {
+    throw new import_notFound.NotFoundError("Agent", newCase.agente_id);
+  }
   return (await (0, import_db.default)("casos").insert(newCase).returning("*"))[0];
 }
 async function updateCase(id, updatedCase) {
+  if (updatedCase.agente_id) {
+    const agenteExists = await (0, import_db.default)("agentes").where({ id: updatedCase.agente_id }).first();
+    if (!agenteExists) {
+      throw new import_notFound.NotFoundError("Agent", updatedCase.agente_id);
+    }
+  }
   const result = await (0, import_db.default)("casos").where({ id }).update(updatedCase);
   if (result === 0) {
     throw new import_notFound.NotFoundError("Case", id);
