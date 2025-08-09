@@ -5,7 +5,7 @@ import agentsRepository from '../repositories/agentesRepository';
 import z from 'zod';
 import { InvalidIDError } from '../errors/invalidID';
 
-function getAllCases(req: Request, res: Response) {
+async function getAllCases(req: Request, res: Response) {
 	const filters = req.query as CaseFilters;
 
 	if (filters.status !== undefined)
@@ -16,7 +16,7 @@ function getAllCases(req: Request, res: Response) {
 
 	if (filters.q !== undefined) z.string().min(3).parse(filters.q);
 
-	const cases = casesRepository.findAll(filters);
+	const cases = await casesRepository.findAll(filters);
 	res.json(cases);
 }
 
