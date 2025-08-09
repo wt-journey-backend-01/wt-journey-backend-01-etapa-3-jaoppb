@@ -16,11 +16,11 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var solution_migrations_exports = {};
-__export(solution_migrations_exports, {
+var agentes_exports = {};
+__export(agentes_exports, {
   seed: () => seed
 });
-module.exports = __toCommonJS(solution_migrations_exports);
+module.exports = __toCommonJS(agentes_exports);
 async function seed(knex) {
   await knex("agentes").del();
   await knex("agentes").insert([
@@ -41,30 +41,6 @@ async function seed(knex) {
       nome: "Agente 3",
       dataDeIncorporacao: /* @__PURE__ */ new Date("2020-03-01"),
       cargo: "Gerente"
-    }
-  ]);
-  await knex("casos").del();
-  await knex("casos").insert([
-    {
-      id: 1,
-      titulo: "Caso 1",
-      descricao: "Descri\xE7\xE3o do caso 1",
-      status: "aberto",
-      agenteId: 1
-    },
-    {
-      id: 2,
-      titulo: "Caso 2",
-      descricao: "Descri\xE7\xE3o do caso 2",
-      status: "solucionado",
-      agenteId: 2
-    },
-    {
-      id: 3,
-      titulo: "Caso 3",
-      descricao: "Descri\xE7\xE3o do caso 3",
-      status: "aberto",
-      agenteId: 3
     }
   ]);
 }
