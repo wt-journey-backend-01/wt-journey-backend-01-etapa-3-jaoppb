@@ -45,3 +45,20 @@ export function errorHandler(
 			});
 	}
 }
+
+export function parseId(entityName: string, id: string | undefined): number {
+	if (!id) {
+		throw new RequiredParamError('id');
+	}
+	const parsedId = parseInt(id, 10);
+	if (isNaN(parsedId) || parsedId <= 0) {
+		throw new InvalidIDError('Entity', parsedId);
+	}
+
+	const isFloat = id.includes('.');
+	if (isFloat) {
+		throw new InvalidIDError(entityName, parsedId);
+	}
+
+	return parsedId;
+}

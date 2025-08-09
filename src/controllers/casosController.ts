@@ -4,6 +4,7 @@ import CaseSchema from '../models/case';
 import agentsRepository from '../repositories/agentesRepository';
 import z from 'zod';
 import { InvalidIDError } from '../errors/invalidID';
+import { parseId } from '../utils';
 
 async function getAllCases(req: Request, res: Response) {
 	const filters = req.query as CaseFilters;
@@ -21,10 +22,7 @@ async function getAllCases(req: Request, res: Response) {
 }
 
 async function getAgentByCaseId(req: Request, res: Response) {
-	const caseId = parseInt(req.params.id);
-	if (isNaN(caseId)) {
-		throw new InvalidIDError('case', caseId);
-	}
+	const caseId = parseId('case', req.params.id);
 
 	const foundCase = await casesRepository.findById(caseId);
 	const agent = await agentsRepository.findById(foundCase.agente_id);
@@ -32,10 +30,7 @@ async function getAgentByCaseId(req: Request, res: Response) {
 }
 
 async function getCaseById(req: Request, res: Response) {
-	const caseId = parseInt(req.params.id);
-	if (isNaN(caseId)) {
-		throw new InvalidIDError('case', caseId);
-	}
+	const caseId = parseId('case', req.params.id);
 
 	const foundCase = await casesRepository.findById(caseId);
 	res.json(foundCase);
@@ -48,10 +43,7 @@ async function createCase(req: Request, res: Response) {
 }
 
 async function overwriteCase(req: Request, res: Response) {
-	const caseId = parseInt(req.params.id);
-	if (isNaN(caseId)) {
-		throw new InvalidIDError('case', caseId);
-	}
+	const caseId = parseId('case', req.params.id);
 
 	const updatedData = CaseSchema.omit({ id: true }).parse(req.body);
 	const updatedCase = await casesRepository.updateCase(caseId, updatedData);
@@ -59,10 +51,7 @@ async function overwriteCase(req: Request, res: Response) {
 }
 
 async function updateCase(req: Request, res: Response) {
-	const caseId = parseInt(req.params.id);
-	if (isNaN(caseId)) {
-		throw new InvalidIDError('case', caseId);
-	}
+	const caseId = parseId('case', req.params.id);
 
 	const updatedData = CaseSchema.omit({ id: true }).partial().parse(req.body);
 	const updatedCase = await casesRepository.updateCase(caseId, updatedData);
@@ -70,10 +59,7 @@ async function updateCase(req: Request, res: Response) {
 }
 
 async function deleteCase(req: Request, res: Response) {
-	const caseId = parseInt(req.params.id);
-	if (isNaN(caseId)) {
-		throw new InvalidIDError('case', caseId);
-	}
+	const caseId = parseId('case', req.params.id);
 
 	await casesRepository.deleteCase(caseId);
 	res.status(204).send();

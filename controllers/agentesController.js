@@ -35,7 +35,7 @@ module.exports = __toCommonJS(agentesController_exports);
 var import_agentesRepository = __toESM(require("../repositories/agentesRepository"));
 var import_agent = __toESM(require("../models/agent"));
 var import_zod = __toESM(require("zod"));
-var import_invalidID = require("../errors/invalidID");
+var import_utils = require("../utils");
 const sortFilter = import_zod.default.enum(["dataDeIncorporacao", "-dataDeIncorporacao"]);
 async function getAllAgents(req, res) {
   const filters = req.query;
@@ -46,10 +46,7 @@ async function getAllAgents(req, res) {
   res.json(agents);
 }
 async function getAgentById(req, res) {
-  const agentId = parseInt(req.params.id);
-  if (isNaN(agentId)) {
-    throw new import_invalidID.InvalidIDError("agent", agentId);
-  }
+  const agentId = (0, import_utils.parseId)("agent", req.params.id);
   const foundAgent = await import_agentesRepository.default.findById(agentId);
   res.json(foundAgent);
 }
@@ -59,10 +56,7 @@ async function createAgent(req, res) {
   res.status(201).json(createdAgent);
 }
 async function overwriteAgent(req, res) {
-  const agentId = parseInt(req.params.id);
-  if (isNaN(agentId)) {
-    throw new import_invalidID.InvalidIDError("agent", agentId);
-  }
+  const agentId = (0, import_utils.parseId)("agent", req.params.id);
   const updatedData = import_agent.default.omit({ id: true }).parse(req.body);
   const updatedAgent = await import_agentesRepository.default.updateAgent(
     agentId,
@@ -71,10 +65,7 @@ async function overwriteAgent(req, res) {
   res.json(updatedAgent);
 }
 async function updateAgent(req, res) {
-  const agentId = parseInt(req.params.id);
-  if (isNaN(agentId)) {
-    throw new import_invalidID.InvalidIDError("agent", agentId);
-  }
+  const agentId = (0, import_utils.parseId)("agent", req.params.id);
   const updatedData = import_agent.default.omit({ id: true }).partial().parse(req.body);
   const updatedAgent = await import_agentesRepository.default.updateAgent(
     agentId,
@@ -83,10 +74,7 @@ async function updateAgent(req, res) {
   res.json(updatedAgent);
 }
 async function deleteAgent(req, res) {
-  const agentId = parseInt(req.params.id);
-  if (isNaN(agentId)) {
-    throw new import_invalidID.InvalidIDError("agent", agentId);
-  }
+  const agentId = (0, import_utils.parseId)("agent", req.params.id);
   await import_agentesRepository.default.deleteAgent(agentId);
   res.status(204).send();
 }

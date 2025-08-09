@@ -5,6 +5,7 @@ import agentRepository, {
 import AgentSchema from '../models/agent';
 import z from 'zod';
 import { InvalidIDError } from '../errors/invalidID';
+import { parseId } from '../utils';
 
 export const sortFilter = z.enum(['dataDeIncorporacao', '-dataDeIncorporacao']);
 
@@ -20,10 +21,7 @@ async function getAllAgents(req: Request, res: Response) {
 }
 
 async function getAgentById(req: Request, res: Response) {
-	const agentId = parseInt(req.params.id);
-	if (isNaN(agentId)) {
-		throw new InvalidIDError('agent', agentId);
-	}
+	const agentId = parseId('agent', req.params.id);
 
 	const foundAgent = await agentRepository.findById(agentId);
 	res.json(foundAgent);
@@ -36,10 +34,7 @@ async function createAgent(req: Request, res: Response) {
 }
 
 async function overwriteAgent(req: Request, res: Response) {
-	const agentId = parseInt(req.params.id);
-	if (isNaN(agentId)) {
-		throw new InvalidIDError('agent', agentId);
-	}
+	const agentId = parseId('agent', req.params.id);
 
 	const updatedData = AgentSchema.omit({ id: true }).parse(req.body);
 	const updatedAgent = await agentRepository.updateAgent(
@@ -50,10 +45,7 @@ async function overwriteAgent(req: Request, res: Response) {
 }
 
 async function updateAgent(req: Request, res: Response) {
-	const agentId = parseInt(req.params.id);
-	if (isNaN(agentId)) {
-		throw new InvalidIDError('agent', agentId);
-	}
+	const agentId = parseId('agent', req.params.id);
 
 	const updatedData = AgentSchema.omit({ id: true })
 		.partial()
@@ -66,10 +58,7 @@ async function updateAgent(req: Request, res: Response) {
 }
 
 async function deleteAgent(req: Request, res: Response) {
-	const agentId = parseInt(req.params.id);
-	if (isNaN(agentId)) {
-		throw new InvalidIDError('agent', agentId);
-	}
+	const agentId = parseId('agent', req.params.id);
 
 	await agentRepository.deleteAgent(agentId);
 	res.status(204).send();

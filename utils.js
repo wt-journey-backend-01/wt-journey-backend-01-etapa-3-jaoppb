@@ -18,7 +18,8 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var utils_exports = {};
 __export(utils_exports, {
-  errorHandler: () => errorHandler
+  errorHandler: () => errorHandler,
+  parseId: () => parseId
 });
 module.exports = __toCommonJS(utils_exports);
 var import_zod = require("zod");
@@ -57,7 +58,22 @@ function errorHandler(err, req, res, next) {
       });
   }
 }
+function parseId(entityName, id) {
+  if (!id) {
+    throw new import_requiredParam.RequiredParamError("id");
+  }
+  const parsedId = parseInt(id, 10);
+  if (isNaN(parsedId) || parsedId <= 0) {
+    throw new import_invalidID.InvalidIDError("Entity", parsedId);
+  }
+  const isFloat = id.includes(".");
+  if (isFloat) {
+    throw new import_invalidID.InvalidIDError(entityName, parsedId);
+  }
+  return parsedId;
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  errorHandler
+  errorHandler,
+  parseId
 });
