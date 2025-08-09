@@ -25,21 +25,18 @@ async function seed(knex) {
   await knex("casos").del();
   await knex("casos").insert([
     {
-      id: 1,
       titulo: "Caso 1",
       descricao: "Descri\xE7\xE3o do caso 1",
       status: "aberto",
       agente_id: 1
     },
     {
-      id: 2,
       titulo: "Caso 2",
       descricao: "Descri\xE7\xE3o do caso 2",
       status: "solucionado",
       agente_id: 2
     },
     {
-      id: 3,
       titulo: "Caso 3",
       descricao: "Descri\xE7\xE3o do caso 3",
       status: "aberto",
