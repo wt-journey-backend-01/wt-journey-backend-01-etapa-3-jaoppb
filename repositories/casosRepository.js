@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var casosRepository_exports = {};
 __export(casosRepository_exports, {
@@ -22,9 +32,9 @@ __export(casosRepository_exports, {
 });
 module.exports = __toCommonJS(casosRepository_exports);
 var import_notFound = require("../errors/notFound");
-var import_knex = require("knex");
+var import_db = __toESM(require("../db/db"));
 async function findAll(filters) {
-  const query = (0, import_knex.knex)("casos");
+  const query = (0, import_db.default)("casos");
   let builder;
   if (filters?.status) {
     builder = (builder ?? query).where("status", filters.status);
@@ -44,22 +54,22 @@ async function findAll(filters) {
   return await (builder ?? query).select();
 }
 async function findById(id) {
-  return (0, import_knex.knex)("casos").where({ id }).first().then((foundCase) => {
+  return (0, import_db.default)("casos").where({ id }).first().then((foundCase) => {
     if (foundCase === void 0) throw new import_notFound.NotFoundError("Case", id);
     return foundCase;
   });
 }
 async function createCase(newCase) {
-  return (0, import_knex.knex)("casos").insert(newCase).returning("*").then((rows) => rows[0]);
+  return (0, import_db.default)("casos").insert(newCase).returning("*").then((rows) => rows[0]);
 }
 async function updateCase(id, updatedCase) {
-  await (0, import_knex.knex)("casos").where({ id }).update(updatedCase).then((count) => {
+  await (0, import_db.default)("casos").where({ id }).update(updatedCase).then((count) => {
     if (count === 0) throw new import_notFound.NotFoundError("Case", id);
   });
   return findById(id);
 }
 async function deleteCase(id) {
-  return (0, import_knex.knex)("casos").where({ id }).delete().then((count) => {
+  return (0, import_db.default)("casos").where({ id }).delete().then((count) => {
     if (count === 0) throw new import_notFound.NotFoundError("Case", id);
   });
 }

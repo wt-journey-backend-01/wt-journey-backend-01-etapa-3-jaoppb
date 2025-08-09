@@ -1,6 +1,6 @@
 import { NotFoundError } from '../errors/notFound';
 import { Case } from '../models/case';
-import { knex } from 'knex';
+import knex from '../db/db';
 
 export type CaseFilters = {
 	status?: string;

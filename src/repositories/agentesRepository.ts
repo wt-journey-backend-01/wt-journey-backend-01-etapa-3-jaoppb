@@ -1,4 +1,4 @@
-import { knex } from 'knex';
+import knex from '../db/db';
 import { FutureDateError } from '../errors/futureDate';
 import { NotFoundError } from '../errors/notFound';
 import { Agent } from '../models/agent';

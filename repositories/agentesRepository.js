@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,17 +17,25 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var agentesRepository_exports = {};
 __export(agentesRepository_exports, {
   default: () => agentesRepository_default
 });
 module.exports = __toCommonJS(agentesRepository_exports);
-var import_knex = require("knex");
+var import_db = __toESM(require("../db/db"));
 var import_futureDate = require("../errors/futureDate");
 var import_notFound = require("../errors/notFound");
 async function findAll(filters) {
-  const query = (0, import_knex.knex)("agentes");
+  const query = (0, import_db.default)("agentes");
   let builder;
   if (filters?.cargo) {
     builder = (builder ?? query).where("cargo", filters.cargo);
@@ -38,7 +48,7 @@ async function findAll(filters) {
   return (builder ?? query).select("*");
 }
 async function findById(id) {
-  return (0, import_knex.knex)("agentes").where({ id }).first().then((foundAgent) => {
+  return (0, import_db.default)("agentes").where({ id }).first().then((foundAgent) => {
     if (foundAgent === void 0) throw new import_notFound.NotFoundError("Agent", id);
     return foundAgent;
   });
@@ -48,20 +58,20 @@ async function createAgent(newAgent) {
   if (date.getTime() > Date.now()) {
     throw new import_futureDate.FutureDateError(date);
   }
-  return (0, import_knex.knex)("agentes").insert(newAgent).returning("*").then((createdAgents) => {
+  return (0, import_db.default)("agentes").insert(newAgent).returning("*").then((createdAgents) => {
     if (createdAgents.length === 0)
       throw new Error("Agent not created");
     return createdAgents[0];
   });
 }
 async function updateAgent(id, updatedAgent) {
-  await (0, import_knex.knex)("agentes").where({ id }).update(updatedAgent).then((updatedCount) => {
+  await (0, import_db.default)("agentes").where({ id }).update(updatedAgent).then((updatedCount) => {
     if (updatedCount === 0) throw new import_notFound.NotFoundError("Agent", id);
   });
   return findById(id);
 }
 async function deleteAgent(id) {
-  await (0, import_knex.knex)("agentes").where({ id }).del().then((deletedCount) => {
+  await (0, import_db.default)("agentes").where({ id }).del().then((deletedCount) => {
     if (deletedCount === 0) throw new import_notFound.NotFoundError("Agent", id);
   });
 }
