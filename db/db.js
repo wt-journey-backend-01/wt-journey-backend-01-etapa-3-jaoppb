@@ -33,7 +33,15 @@ __export(db_exports, {
 module.exports = __toCommonJS(db_exports);
 var import_knex = __toESM(require("knex"));
 var import_knexfile = __toESM(require("../knexfile"));
+var import_pg = __toESM(require("pg"));
 const nodeEnv = process.env.NODE_ENV || "development";
 const config = import_knexfile.default[nodeEnv];
 const db = (0, import_knex.default)(config);
+import_pg.default.types.setTypeParser(import_pg.default.types.builtins.DATE, (value) => {
+  const date = new Date(value);
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date: ${value}`);
+  }
+  return date.toISOString().split("T", 1)[0];
+});
 var db_default = db;
