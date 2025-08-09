@@ -9,7 +9,7 @@ export type CaseFilters = {
 };
 
 async function findAll(filters?: CaseFilters): Promise<Case[]> {
-	const query = knex<Case>('cases');
+	const query = knex<Case>('casos');
 	let builder;
 
 	if (filters?.status) {
@@ -32,7 +32,7 @@ async function findAll(filters?: CaseFilters): Promise<Case[]> {
 }
 
 async function findById(id: number): Promise<Case> {
-	return knex<Case>('cases')
+	return knex<Case>('casos')
 		.where({ id })
 		.first()
 		.then((foundCase) => {
@@ -42,7 +42,7 @@ async function findById(id: number): Promise<Case> {
 }
 
 async function createCase(newCase: Omit<Case, 'id'>): Promise<Case> {
-	return knex<Case>('cases')
+	return knex<Case>('casos')
 		.insert(newCase)
 		.returning('*')
 		.then((rows) => rows[0]);
@@ -52,7 +52,7 @@ async function updateCase(
 	id: number,
 	updatedCase: Partial<Case>,
 ): Promise<Case> {
-	await knex<Case>('cases')
+	await knex<Case>('casos')
 		.where({ id })
 		.update(updatedCase)
 		.then((count) => {
@@ -62,7 +62,7 @@ async function updateCase(
 }
 
 async function deleteCase(id: number): Promise<void> {
-	return knex<Case>('cases')
+	return knex<Case>('casos')
 		.where({ id })
 		.delete()
 		.then((count) => {

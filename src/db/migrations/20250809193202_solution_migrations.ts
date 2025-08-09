@@ -15,9 +15,9 @@ export async function up(knex: Knex) {
 		table.text('descricao').notNullable();
 		table.enum('status', Object.values(CaseStatus)).notNullable();
 
-		table.integer('agenteId').unsigned().notNullable();
+		table.integer('agente_id').unsigned().notNullable();
 		table
-			.foreign('agenteId')
+			.foreign('agente_id')
 			.references('id')
 			.inTable('agentes')
 			.onDelete('CASCADE');

@@ -35,8 +35,8 @@ async function up(knex) {
     table.string("titulo").notNullable();
     table.text("descricao").notNullable();
     table.enum("status", Object.values(import_case.CaseStatus)).notNullable();
-    table.integer("agenteId").unsigned().notNullable();
-    table.foreign("agenteId").references("id").inTable("agentes").onDelete("CASCADE");
+    table.integer("agente_id").unsigned().notNullable();
+    table.foreign("agente_id").references("id").inTable("agentes").onDelete("CASCADE");
   });
 }
 async function down(knex) {

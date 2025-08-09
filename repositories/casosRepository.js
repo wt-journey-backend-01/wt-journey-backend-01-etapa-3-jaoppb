@@ -24,7 +24,7 @@ module.exports = __toCommonJS(casosRepository_exports);
 var import_notFound = require("../errors/notFound");
 var import_knex = require("knex");
 async function findAll(filters) {
-  const query = (0, import_knex.knex)("cases");
+  const query = (0, import_knex.knex)("casos");
   let builder;
   if (filters?.status) {
     builder = (builder ?? query).where("status", filters.status);
@@ -44,22 +44,22 @@ async function findAll(filters) {
   return await (builder ?? query).select();
 }
 async function findById(id) {
-  return (0, import_knex.knex)("cases").where({ id }).first().then((foundCase) => {
+  return (0, import_knex.knex)("casos").where({ id }).first().then((foundCase) => {
     if (foundCase === void 0) throw new import_notFound.NotFoundError("Case", id);
     return foundCase;
   });
 }
 async function createCase(newCase) {
-  return (0, import_knex.knex)("cases").insert(newCase).returning("*").then((rows) => rows[0]);
+  return (0, import_knex.knex)("casos").insert(newCase).returning("*").then((rows) => rows[0]);
 }
 async function updateCase(id, updatedCase) {
-  await (0, import_knex.knex)("cases").where({ id }).update(updatedCase).then((count) => {
+  await (0, import_knex.knex)("casos").where({ id }).update(updatedCase).then((count) => {
     if (count === 0) throw new import_notFound.NotFoundError("Case", id);
   });
   return findById(id);
 }
 async function deleteCase(id) {
-  return (0, import_knex.knex)("cases").where({ id }).delete().then((count) => {
+  return (0, import_knex.knex)("casos").where({ id }).delete().then((count) => {
     if (count === 0) throw new import_notFound.NotFoundError("Case", id);
   });
 }
