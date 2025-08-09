@@ -55,43 +55,43 @@ async function getAgentByCaseId(req, res) {
   const agent = await import_agentesRepository.default.findById(foundCase.agente_id);
   res.json(agent);
 }
-function getCaseById(req, res) {
+async function getCaseById(req, res) {
   const caseId = parseInt(req.params.id);
   if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
-  const foundCase = import_casosRepository.default.findById(caseId);
+  const foundCase = await import_casosRepository.default.findById(caseId);
   res.json(foundCase);
 }
-function createCase(req, res) {
+async function createCase(req, res) {
   const newCase = import_case.default.omit({ id: true }).parse(req.body);
-  const createdCase = import_casosRepository.default.createCase(newCase);
+  const createdCase = await import_casosRepository.default.createCase(newCase);
   res.status(201).json(createdCase);
 }
-function overwriteCase(req, res) {
+async function overwriteCase(req, res) {
   const caseId = parseInt(req.params.id);
   if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
   const updatedData = import_case.default.omit({ id: true }).parse(req.body);
-  const updatedCase = import_casosRepository.default.updateCase(caseId, updatedData);
+  const updatedCase = await import_casosRepository.default.updateCase(caseId, updatedData);
   res.json(updatedCase);
 }
-function updateCase(req, res) {
+async function updateCase(req, res) {
   const caseId = parseInt(req.params.id);
   if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
   const updatedData = import_case.default.omit({ id: true }).partial().parse(req.body);
-  const updatedCase = import_casosRepository.default.updateCase(caseId, updatedData);
+  const updatedCase = await import_casosRepository.default.updateCase(caseId, updatedData);
   res.json(updatedCase);
 }
-function deleteCase(req, res) {
+async function deleteCase(req, res) {
   const caseId = parseInt(req.params.id);
   if (isNaN(caseId)) {
     throw new import_invalidID.InvalidIDError("case", caseId);
   }
-  import_casosRepository.default.deleteCase(caseId);
+  await import_casosRepository.default.deleteCase(caseId);
   res.status(204).send();
 }
 var casosController_default = {

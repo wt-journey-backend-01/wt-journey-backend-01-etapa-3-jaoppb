@@ -8,45 +8,48 @@ import { InvalidIDError } from '../errors/invalidID';
 
 export const sortFilter = z.enum(['dataDeIncorporacao', '-dataDeIncorporacao']);
 
-function getAllAgents(req: Request, res: Response) {
+async function getAllAgents(req: Request, res: Response) {
 	const filters = req.query as AgentFilters;
 
 	if (filters.cargo !== undefined)
 		AgentSchema.shape.cargo.parse(filters.cargo);
 	if (filters.sort !== undefined) sortFilter.parse(filters.sort);
 
-	const agents = agentRepository.findAll(filters);
+	const agents = await agentRepository.findAll(filters);
 	res.json(agents);
 }
 
-function getAgentById(req: Request, res: Response) {
+async function getAgentById(req: Request, res: Response) {
 	const agentId = parseInt(req.params.id);
 	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
-	const foundAgent = agentRepository.findById(agentId);
+	const foundAgent = await agentRepository.findById(agentId);
 	res.json(foundAgent);
 }
 
-function createAgent(req: Request, res: Response) {
+async function createAgent(req: Request, res: Response) {
 	const newAgent = AgentSchema.omit({ id: true }).parse(req.body);
-	const createdAgent = agentRepository.createAgent(newAgent);
+	const createdAgent = await agentRepository.createAgent(newAgent);
 	res.status(201).json(createdAgent);
 }
 
-function overwriteAgent(req: Request, res: Response) {
+async function overwriteAgent(req: Request, res: Response) {
 	const agentId = parseInt(req.params.id);
 	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
 	const updatedData = AgentSchema.omit({ id: true }).parse(req.body);
-	const updatedAgent = agentRepository.updateAgent(agentId, updatedData);
+	const updatedAgent = await agentRepository.updateAgent(
+		agentId,
+		updatedData,
+	);
 	res.json(updatedAgent);
 }
 
-function updateAgent(req: Request, res: Response) {
+async function updateAgent(req: Request, res: Response) {
 	const agentId = parseInt(req.params.id);
 	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
@@ -55,17 +58,20 @@ function updateAgent(req: Request, res: Response) {
 	const updatedData = AgentSchema.omit({ id: true })
 		.partial()
 		.parse(req.body);
-	const updatedAgent = agentRepository.updateAgent(agentId, updatedData);
+	const updatedAgent = await agentRepository.updateAgent(
+		agentId,
+		updatedData,
+	);
 	res.json(updatedAgent);
 }
 
-function deleteAgent(req: Request, res: Response) {
+async function deleteAgent(req: Request, res: Response) {
 	const agentId = parseInt(req.params.id);
 	if (isNaN(agentId)) {
 		throw new InvalidIDError('agent', agentId);
 	}
 
-	agentRepository.deleteAgent(agentId);
+	await agentRepository.deleteAgent(agentId);
 	res.status(204).send();
 }
 

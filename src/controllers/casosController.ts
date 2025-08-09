@@ -31,51 +31,51 @@ async function getAgentByCaseId(req: Request, res: Response) {
 	res.json(agent);
 }
 
-function getCaseById(req: Request, res: Response) {
+async function getCaseById(req: Request, res: Response) {
 	const caseId = parseInt(req.params.id);
 	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
-	const foundCase = casesRepository.findById(caseId);
+	const foundCase = await casesRepository.findById(caseId);
 	res.json(foundCase);
 }
 
-function createCase(req: Request, res: Response) {
+async function createCase(req: Request, res: Response) {
 	const newCase = CaseSchema.omit({ id: true }).parse(req.body);
-	const createdCase = casesRepository.createCase(newCase);
+	const createdCase = await casesRepository.createCase(newCase);
 	res.status(201).json(createdCase);
 }
 
-function overwriteCase(req: Request, res: Response) {
+async function overwriteCase(req: Request, res: Response) {
 	const caseId = parseInt(req.params.id);
 	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
 	const updatedData = CaseSchema.omit({ id: true }).parse(req.body);
-	const updatedCase = casesRepository.updateCase(caseId, updatedData);
+	const updatedCase = await casesRepository.updateCase(caseId, updatedData);
 	res.json(updatedCase);
 }
 
-function updateCase(req: Request, res: Response) {
+async function updateCase(req: Request, res: Response) {
 	const caseId = parseInt(req.params.id);
 	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
 	const updatedData = CaseSchema.omit({ id: true }).partial().parse(req.body);
-	const updatedCase = casesRepository.updateCase(caseId, updatedData);
+	const updatedCase = await casesRepository.updateCase(caseId, updatedData);
 	res.json(updatedCase);
 }
 
-function deleteCase(req: Request, res: Response) {
+async function deleteCase(req: Request, res: Response) {
 	const caseId = parseInt(req.params.id);
 	if (isNaN(caseId)) {
 		throw new InvalidIDError('case', caseId);
 	}
 
-	casesRepository.deleteCase(caseId);
+	await casesRepository.deleteCase(caseId);
 	res.status(204).send();
 }
 

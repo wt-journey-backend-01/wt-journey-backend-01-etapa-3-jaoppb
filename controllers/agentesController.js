@@ -37,51 +37,57 @@ var import_agent = __toESM(require("../models/agent"));
 var import_zod = __toESM(require("zod"));
 var import_invalidID = require("../errors/invalidID");
 const sortFilter = import_zod.default.enum(["dataDeIncorporacao", "-dataDeIncorporacao"]);
-function getAllAgents(req, res) {
+async function getAllAgents(req, res) {
   const filters = req.query;
   if (filters.cargo !== void 0)
     import_agent.default.shape.cargo.parse(filters.cargo);
   if (filters.sort !== void 0) sortFilter.parse(filters.sort);
-  const agents = import_agentesRepository.default.findAll(filters);
+  const agents = await import_agentesRepository.default.findAll(filters);
   res.json(agents);
 }
-function getAgentById(req, res) {
+async function getAgentById(req, res) {
   const agentId = parseInt(req.params.id);
   if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
-  const foundAgent = import_agentesRepository.default.findById(agentId);
+  const foundAgent = await import_agentesRepository.default.findById(agentId);
   res.json(foundAgent);
 }
-function createAgent(req, res) {
+async function createAgent(req, res) {
   const newAgent = import_agent.default.omit({ id: true }).parse(req.body);
-  const createdAgent = import_agentesRepository.default.createAgent(newAgent);
+  const createdAgent = await import_agentesRepository.default.createAgent(newAgent);
   res.status(201).json(createdAgent);
 }
-function overwriteAgent(req, res) {
+async function overwriteAgent(req, res) {
   const agentId = parseInt(req.params.id);
   if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
   const updatedData = import_agent.default.omit({ id: true }).parse(req.body);
-  const updatedAgent = import_agentesRepository.default.updateAgent(agentId, updatedData);
+  const updatedAgent = await import_agentesRepository.default.updateAgent(
+    agentId,
+    updatedData
+  );
   res.json(updatedAgent);
 }
-function updateAgent(req, res) {
+async function updateAgent(req, res) {
   const agentId = parseInt(req.params.id);
   if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
   const updatedData = import_agent.default.omit({ id: true }).partial().parse(req.body);
-  const updatedAgent = import_agentesRepository.default.updateAgent(agentId, updatedData);
+  const updatedAgent = await import_agentesRepository.default.updateAgent(
+    agentId,
+    updatedData
+  );
   res.json(updatedAgent);
 }
-function deleteAgent(req, res) {
+async function deleteAgent(req, res) {
   const agentId = parseInt(req.params.id);
   if (isNaN(agentId)) {
     throw new import_invalidID.InvalidIDError("agent", agentId);
   }
-  import_agentesRepository.default.deleteAgent(agentId);
+  await import_agentesRepository.default.deleteAgent(agentId);
   res.status(204).send();
 }
 var agentesController_default = {
